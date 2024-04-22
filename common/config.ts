@@ -52,7 +52,7 @@ const mocknet = {
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
   network: new StacksMocknet(),
-  stacksApiBase: "http://localhost:3999",
+  stacksApiBase: "https://devnet.stackonmybrotha.xyz",
   oracleAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   oracleContractName: "arkadiko-oracle-v2-3",
   arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
