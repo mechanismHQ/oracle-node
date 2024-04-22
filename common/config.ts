@@ -45,9 +45,9 @@ export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: n
 const mocknet = {
   symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
   nodes: [
-    "http://localhost:3000/",
-    "http://localhost:3000/",
-    "http://localhost:3000/"
+    "https://coinmarketcap-oracle-285608c255ed.herokuapp.com/",
+    "https://coinmarketcap-oracle-285608c255ed.herokuapp.com/",
+    "https://coinmarketcap-oracle-285608c255ed.herokuapp.com/"
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
