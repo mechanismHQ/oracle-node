@@ -1,8 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import { getPriceInfo, getSignableMessage, getTokenNames } from '@common/oracle';
-import secp256k1 from 'secp256k1';
 import { config, tokenInfo } from '@common/config';
-import { getCurrentBlockHeight } from '@common/stacks';
+import { getPriceInfo, getSignableMessage, getTokenNames } from '@common/oracle';
+import type { NextApiRequest, NextApiResponse } from 'next';
+import secp256k1 from 'secp256k1';
 
 type Data = {
   signature: string,
@@ -19,7 +18,7 @@ export default async function handler(
 ) {
   // Get params
   const { block, tokenId, price, decimals } = req.query;
-  console.log("\n[SIGN] Input:", {block: block, tokenId: tokenId, price: price, decimals: decimals});
+  console.log("\n[SIGN] Input:", { block: block, tokenId: tokenId, price: price, decimals: decimals });
 
   // Check input
   const inputError = await checkInput(Number(block), Number(tokenId), Number(price), Number(decimals));
@@ -39,7 +38,7 @@ export default async function handler(
 
   // Get signable message from oracle contract
   const signableMessage = await getSignableMessage(priceObject);
-  
+
   // Message to sign
   const message = Buffer.from(signableMessage.replace("0x", ""), "hex");
 
@@ -68,12 +67,12 @@ export default async function handler(
 
 async function checkInput(block: number, tokenId: number, price: number, decimals: number): Promise<DataError | undefined> {
   try {
-    // Check if block correct
-    const currentBlock = await getCurrentBlockHeight();
-    if (Math.abs(currentBlock - block) >= config.inputMaxBlockDiff) {
-      console.log("[SIGN] Wrong input - Block: " + block + ", current block: " + currentBlock);
-      return { error: "wrong input - block" };
-    }
+    // // Check if block correct
+    // const currentBlock = await getCurrentBlockHeight();
+    // if (Math.abs(currentBlock - block) >= config.inputMaxBlockDiff) {
+    //   console.log("[SIGN] Wrong input - Block: " + block + ", current block: " + currentBlock);
+    //   return { error: "wrong input - block" };
+    // }
 
     // Get token names
     const tokenNames = await getTokenNames(Number(tokenId));
