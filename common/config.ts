@@ -8,7 +8,7 @@ import { SourceCoinGecko } from '@sources/coingecko';
 import { SourceCoinMarketCap } from '@sources/coinmarketcap';
 import { SourceCryptoCompare } from '@sources/cryptocompare';
 import { SourceKucoin } from '@sources/kucoin';
-import { StacksMainnet, StacksMocknet, StacksTestnet } from "@stacks/network";
+import { StacksMainnet, StacksTestnet } from "@stacks/network";
 
 const network = process.env.NEXT_PUBLIC_NETWORK as 'mocknet' | 'testnet' | 'mainnet';
 const source = process.env.NEXT_PUBLIC_SOURCE as 'coinmarketcap' | 'coingecko' | 'coinbase' | 'kucoin' | 'coincap' | 'cryptocompare';
@@ -43,7 +43,7 @@ export const tokenInfo: { [key: string]: { decimals: number, arkadikoDecimals: n
 
 // Mocknet config
 const mocknet = {
-  symbols: ["STX", "BTC", "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"],
+  symbols: ["STX", "BTC"/*, "USDA", "STX/USDA", "DIKO", "auto-alex", "auto-alex-v2", "stSTX"*/],
   nodes: [
     "https://coinmarketcap-oracle-285608c255ed.herokuapp.com",
     "https://coingecko-oracle-ca7823d12278.herokuapp.com",
@@ -51,12 +51,12 @@ const mocknet = {
   ],
   signKey: process.env.SIGN_KEY as string,
   networkName: network,
-  network: new StacksMocknet(),
+  network: new StacksMainnet({ url: "https://smart-lively-reel.stacks-mainnet.quiknode.pro/830375caeea57082e4dd34cb398b04e8bf7c490e" }),
   stacksApiBase: "https://devnet.stackonmybrotha.xyz",
   oracleAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   oracleContractName: "arkadiko-oracle-v2-3",
-  arkadikoAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
-  alexAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
+  arkadikoAddress: "SP2C2YFP12AJZB4MABJBAJ55XECVS7E4PMMZ89YZR",
+  alexAddress: "SP3K8BC0PPEVCV7NZ6QSRWPQ2JE9E5B6N3PA0KBR9",
   managerAddress: "ST1PQHQKV0RJXZFY1DGX8MNSNYVE3VGZJSRTPGZGM",
   managerKey: "753b7cc01a1a2e86221266a154af739463fce51219d97e4f856cd7200c3bd2a601",
   source: getSource(),

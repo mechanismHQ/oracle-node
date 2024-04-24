@@ -1,7 +1,7 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
 import { config, tokenInfo } from '@common/config';
 import { getMinimumSigners, getPriceInfo, getTokenId, pushPriceInfo } from '@common/oracle';
 import { getCurrentBlockHeight, getMempoolTransactions, getNonce, getUnanchoredMicroblockTransactions } from '@common/stacks';
+import type { NextApiRequest, NextApiResponse } from 'next';
 
 type Data = {
   result: string
@@ -37,13 +37,13 @@ export default async function handler(
       const mempoolFee = Number(mempoolTx.fee_rate);
       const currentTimeStamp = (Date.now() / 1000.0);
       if (20 * 60 < (currentTimeStamp - mempoolTx.receipt_time) && mempoolFee < 1000000) {
-        console.log("\n[CHECK] Should RBF mempool TX: " + symbol + " (ID #" + tokenId + ")");  
+        console.log("\n[CHECK] Should RBF mempool TX: " + symbol + " (ID #" + tokenId + ")");
         await updatePrice(symbol, tokenId, arkadikoDecimals, lastBlock, blockHeight, lastPrice, price, mempoolTx.nonce, mempoolFee * 1.2);
-  
+
       } else {
         console.log("\n[CHECK] Waiting for TX in mempool: " + symbol + " (ID #" + tokenId + ")");
       }
-    
+
     } else {
       const shouldUpdate = await shouldUpdatePrice(lastBlock, blockHeight, lastPrice, price);
 
@@ -63,14 +63,14 @@ export default async function handler(
 
 async function shouldUpdatePrice(lastBlock: number, blockHeight: number, lastPrice: number, price: number): Promise<boolean> {
 
-  // Block and price triggers
-  let blockTrigger = blockHeight >= lastBlock + config.updateBlockDiff;
-  let priceTrigger = Math.abs((lastPrice / price) - 1.0) > config.updatePriceDiff;
+  // // Block and price triggers
+  // let blockTrigger = blockHeight >= lastBlock + config.updateBlockDiff;
+  // let priceTrigger = Math.abs((lastPrice / price) - 1.0) > config.updatePriceDiff;
 
-  // Do not continue if both triggers are false
-  if (!blockTrigger && !priceTrigger) {
-    return false
-  }
+  // // Do not continue if both triggers are false
+  // if (!blockTrigger && !priceTrigger) {
+  //   return false
+  // }
 
   return true
 }
@@ -120,6 +120,7 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, la
     const response = await fetch(url, { credentials: 'omit' });
     const data = await response.json();
     if (response.status == 200) {
+      console.log("[CHECK] Signature:", data.signature);
       signatures.push(data.signature);
     } else {
       console.log("[CHECK] Could not get signature, error:", data);
@@ -130,10 +131,12 @@ async function updatePrice(symbol: string, tokenId: number, decimals: number, la
   // Push on chain
   const minimumSigners = await getMinimumSigners();
   const uniqueSignatures = new Set(signatures).size
+  console.log("[CHECK] Unique signatures:", uniqueSignatures, ", minimum signers:", minimumSigners);
   if (uniqueSignatures >= minimumSigners) {
 
     // Check again if price still needs update
     const shouldUpdate = await shouldUpdatePrice(lastBlock, blockHeight, lastPrice, price);
+    console.log("[CHECK] Should update:", shouldUpdate);
     if (shouldUpdate) {
       console.log("[CHECK] Push price info for " + symbol, ", info:", priceObject);
       const pushResult = await pushPriceInfo(priceObject, signatures, nonce, fee);

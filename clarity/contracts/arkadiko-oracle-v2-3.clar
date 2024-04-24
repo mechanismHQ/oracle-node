@@ -237,7 +237,15 @@
 
 (begin
 
-  (map-set trusted-oracles 0x030ff9624a847795b25d32d00c903aba2f08b33e412eab1c2e7de08ab4541f8079 true)
+  ;; coinmarketcap
+  (map-set trusted-oracles 0x024663383517e8ed9defaaff91329c3207d9c4125e03550317fab11474612cac4f true)
+
+  ;; coingecko
+  (map-set trusted-oracles 0x029cb616137f5c568817d71f48bab36357fa8c58c454f98f4ad3b4a1330e663f70 true)
+
+  ;; cryptocompare
+  (map-set trusted-oracles 0x028490574b818b4b57aa9e5c96ccfb4b7010379eb27731ad256f4d4d1304cbbb2c true)
+
 
   (map-set token-id-to-names u1 (list "STX" "xSTX"))
   (map-set token-name-to-id "STX" u1)

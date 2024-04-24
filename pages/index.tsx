@@ -1,12 +1,12 @@
-import Head from 'next/head'
-import { useEffect, useState } from 'react';
-import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@common/oracle';
 import { config, tokenInfo } from '@common/config';
+import { getMinimumSigners, getPriceInfo, getTokenId, getTokenNames } from '@common/oracle';
 import { getCurrentBlockHeight } from '@common/stacks';
-import PriceRow from 'components/price-row';
 import NodeRow from 'components/node-row';
+import PriceRow from 'components/price-row';
 import SourceRow from 'components/source-row';
 import ToolTip from 'components/tooltip';
+import Head from 'next/head';
+import { useEffect, useState } from 'react';
 
 export default function Home() {
 
@@ -102,16 +102,16 @@ export default function Home() {
 
       // Fetch on-chain oracle info
       const oracleInfo = await getOracleInfo(currentBlock);
-      const newPriceRows:any = [];
+      const newPriceRows: any = [];
       for (const info of oracleInfo) {
         newPriceRows.push(
-          <PriceRow 
+          <PriceRow
             key={info.tokenId}
             tokenId={info.tokenId}
-            symbols={info.symbols.join(", ")} 
-            decimals={info.decimals} 
+            symbols={info.symbols.join(", ")}
+            decimals={info.decimals}
             arkadikoDecimals={info.arkadikoDecimals}
-            lastUpdated={info.blocksAgo + " blocks ago (#" + info.lastBlock + ")"} 
+            lastUpdated={info.blocksAgo + " blocks ago (#" + info.lastBlock + ")"}
             price={"$" + info.lastDollarPrice + " (" + info.lastOraclePrice + ")"}
           />
         )
@@ -123,17 +123,17 @@ export default function Home() {
       const infoNodes = await getNodesInfo();
 
       // Create node rows
-      const newNodeRows:any = [];
+      const newNodeRows: any = [];
       for (const infoNode of infoNodes) {
         newNodeRows.push(
-          <NodeRow 
+          <NodeRow
             key={infoNode.publicKey}
             publicKey={infoNode.publicKey}
             url={infoNode.url}
             currentNode={infoNode.source == config.sourceName}
-            trusted={infoNode.trusted} 
-            network={infoNode.network} 
-            source={infoNode.source} 
+            trusted={infoNode.trusted}
+            network={infoNode.network}
+            source={infoNode.source}
             maxBlockDiff={infoNode.maxBlockDiff}
             maxPriceDiff={infoNode.maxPriceDiff}
           />
@@ -142,14 +142,18 @@ export default function Home() {
       setNodeRows(newNodeRows)
 
       // Create sources and prices rows 
-      const newSourceRows:any = [];
+      const newSourceRows: any = [];
       for (const infoNode of infoNodes) {
+        const filteredTokens = {
+          STX: infoNode.prices['STX'],
+          BTC: infoNode.prices['BTC']
+        }
         newSourceRows.push(
-          <SourceRow 
+          <SourceRow
             key={infoNode.source}
             source={infoNode.source}
             currentNode={infoNode.source == config.sourceName}
-            prices={infoNode.prices}
+            prices={filteredTokens}
           />
         )
       }
@@ -177,7 +181,7 @@ export default function Home() {
       </Head>
 
       <main className="mt-10 text-center">
-        
+
         {/* 
           HEADER
         */}
@@ -202,10 +206,10 @@ export default function Home() {
           <>
             <p className="mb-3 text-sm text-gray-400">
               current block #{blockHeight}{' | '}
-              <a 
-                className="text-blue-500" 
-                target="_blank" 
-                rel="noreferrer" 
+              <a
+                className="text-blue-500"
+                target="_blank"
+                rel="noreferrer"
                 href={`https://explorer.stacks.co/txid/${config.oracleAddress}.${config.oracleContractName}?chain=${config.networkName}`}
               >
                 show contract
@@ -225,13 +229,13 @@ export default function Home() {
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Decimals
                       <span className="ml-2">
-                        <ToolTip info="Decimals for pushed prices"/>
+                        <ToolTip info="Decimals for pushed prices" />
                       </span>
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Arkadiko decimals
                       <span className="ml-2">
-                        <ToolTip info="Used by Arkadiko to convert prices"/>
+                        <ToolTip info="Used by Arkadiko to convert prices" />
                       </span>
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
@@ -285,13 +289,13 @@ export default function Home() {
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Max block diff
                       <span className="ml-2">
-                        <ToolTip info="Node will not sign price if given block deviates too much from current block"/>
+                        <ToolTip info="Node will not sign price if given block deviates too much from current block" />
                       </span>
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
                       Max price diff
                       <span className="ml-2">
-                        <ToolTip info="Node will not sign price if given price deviates too much from it's own price"/>
+                        <ToolTip info="Node will not sign price if given price deviates too much from it's own price" />
                       </span>
                     </th>
                     <th scope="col" className="px-6 py-3 text-xs font-medium tracking-wider text-left text-gray-500 uppercase">
@@ -320,7 +324,7 @@ export default function Home() {
         ) : (
           <>
             <p className="mb-3 text-sm text-gray-400">
-              {config.sourceName} | Arkadiko DEX | Alex DEX
+              {config.sourceName}
             </p>
 
             <div className="overflow-x-auto border border-gray-200 rounded-lg text-left">
@@ -335,9 +339,9 @@ export default function Home() {
                         {symbol}
                         {tokenInfo[symbol].tooltip ? (
                           <span className="ml-2">
-                            <ToolTip info={tokenInfo[symbol].tooltip!}/>
+                            <ToolTip info={tokenInfo[symbol].tooltip!} />
                           </span>
-                        ): null}
+                        ) : null}
                       </th>
                     ))}
                   </tr>

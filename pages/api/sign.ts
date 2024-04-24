@@ -97,10 +97,11 @@ async function checkInput(block: number, tokenId: number, price: number, decimal
 
     // Check if price within range
     const sourcePrice = await config.source.fetchPrice(symbol) as number;
-    if (Math.abs(price / sourcePrice - 1) > config.inputMaxPriceDiff) {
-      console.log("[SIGN] Wrong input - Price: " + price + ", source price: " + sourcePrice);
-      return { error: "wrong input - price" };
-    }
+    console.log("[SIGN] Price: " + price + ", source price: " + sourcePrice);
+    // if (Math.abs(price / sourcePrice - 1) > config.inputMaxPriceDiff) {
+    //   console.log("[SIGN] Wrong input - Price: " + price + ", source price: " + sourcePrice);
+    //   return { error: "wrong input - price" };
+    // }
 
     return undefined;
   } catch (e) {
